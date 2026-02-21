@@ -99,7 +99,16 @@ def generate():
             cmd.extend(['--enhancer', enhancer])
 
         env = os.environ.copy()
-        env['PYTHONPATH'] = os.pathsep.join([SADTALKER_DIR, env.get('PYTHONPATH', '')])
+        # Keep venv site-packages first so subprocess finds setuptools, torch, etc.
+        site_packages = None
+        for p in sys.path:
+            if 'site-packages' in p and os.path.exists(p):
+                site_packages = p
+                break
+        if site_packages:
+            env['PYTHONPATH'] = os.pathsep.join([site_packages, SADTALKER_DIR, env.get('PYTHONPATH', '')])
+        else:
+            env['PYTHONPATH'] = os.pathsep.join([SADTALKER_DIR, env.get('PYTHONPATH', '')])
 
         logger.info('[%s] Running SadTalker...', request_id)
         result = subprocess.run(cmd, cwd=SADTALKER_DIR, capture_output=True, text=True, timeout=1800, env=env)
