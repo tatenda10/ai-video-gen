@@ -8,6 +8,8 @@ import { VoiceService } from './services/voice.service.js';
 import { MuseTalkService } from './services/musetalk.service.js';
 import { LipsyncService } from './services/lipsync.service.js';
 import { VideoService } from './services/video.service.js';
+import { WanService } from './services/wan.service.js';
+import { LipsyncResyncService } from './services/lipsync-resync.service.js';
 import { cleanupJob } from './utils/cleanup.js';
 
 export class VideoPipeline {
@@ -19,6 +21,8 @@ export class VideoPipeline {
     this.musetalkService = new MuseTalkService(config);
     this.lipsyncService = new LipsyncService(config);
     this.videoService = new VideoService(config);
+    this.wanService = new WanService(config);
+    this.lipsyncResyncService = new LipsyncResyncService(config);
     
     // Determine which video generation provider to use
     this.videoProvider = config.videoGeneration?.provider || 'sadtalker';
@@ -59,7 +63,7 @@ export class VideoPipeline {
       );
 
       // Step 4: Generate video (only 1 scene)
-      const providerNames = { musetalk: 'MuseTalk', sadtalker: 'SadTalker' };
+      const providerNames = { musetalk: 'MuseTalk', sadtalker: 'SadTalker', 'wan-lipsync': 'Wan I2V + Lip re-sync' };
       const providerName = providerNames[this.videoProvider] || this.videoProvider;
       log.info(`Step 4/7: Generating video with ${providerName}...`);
       const videoMap = {};
@@ -79,8 +83,27 @@ export class VideoPipeline {
 
       let videoPath;
       
-      // Generate talking-head video based on configured provider
-      if (this.videoProvider === 'sadtalker') {
+      if (this.videoProvider === 'wan-lipsync') {
+        // Full-scene realistic + perfect lip sync: Wan I2V → then Wav2Lip re-sync
+        log.info(`Step 4a: Wan I2V (full-scene video from image)...`);
+        const motionPrompt = scene.visual_prompt || scene.camera_motion || 'Person speaking naturally to camera with subtle movement.';
+        const rawVideoPath = await this.wanService.generateVideo(
+          imagePath,
+          motionPrompt,
+          scene.scene_id,
+          jobId,
+          this.config.paths.temp
+        );
+        log.info(`Step 4b: Lip re-sync (video + audio → synced lips)...`);
+        videoPath = await this.lipsyncResyncService.resync(
+          rawVideoPath,
+          audioPath,
+          scene.scene_id,
+          jobId,
+          this.config.paths.temp
+        );
+        videoMap[scene.scene_id] = videoPath;
+      } else if (this.videoProvider === 'sadtalker') {
         // SadTalker (RunPod): image + audio → video
         log.info(`Generating single talking-head video with SadTalker...`);
         videoPath = await this.lipsyncService.generateTalkingHead(
@@ -127,7 +150,7 @@ export class VideoPipeline {
           videoMap[scene.scene_id] = videoPath;
         }
       } else {
-        throw new Error(`Unknown video provider: ${this.videoProvider}. Use sadtalker or musetalk.`);
+        throw new Error(`Unknown video provider: ${this.videoProvider}. Use sadtalker, musetalk, or wan-lipsync.`);
       }
 
       // Step 5: Final video (only 1 scene, no stitching needed)

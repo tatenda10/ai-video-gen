@@ -29,8 +29,14 @@ const config = {
   musetalk: {
     apiUrl: process.env.MUSETALK_API_URL || 'http://localhost:5001',
   },
+  wan: {
+    apiUrl: process.env.WAN_API_URL, // Self-hosted Wan I2V (Hugging Face). e.g. http://localhost:5002
+  },
+  wav2lip: {
+    apiUrl: process.env.WAV2LIP_API_URL, // Self-hosted Wav2Lip (Hugging Face). e.g. http://localhost:5003
+  },
   videoGeneration: {
-    provider: process.env.VIDEO_GENERATION_PROVIDER || 'sadtalker', // 'sadtalker' | 'musetalk'
+    provider: process.env.VIDEO_GENERATION_PROVIDER || 'sadtalker', // 'sadtalker' | 'musetalk' | 'wan-lipsync'
   },
   ffmpeg: {
     path: process.env.FFMPEG_PATH,
