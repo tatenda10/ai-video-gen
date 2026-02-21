@@ -1,0 +1,68 @@
+CURRENT PROMPTS BEING USED IN THE APPLICATION
+========================================
+
+1. IMAGE GENERATION PROMPT (Gemini/Imagen)
+   ----------------------------------------
+   Base prompt comes from script.visual_prompt
+   
+   For talking_head scenes, script generates:
+   "A beautiful person holding a smartphone showing the screen, portrait orientation, looking at camera, natural lighting, professional quality"
+   
+   Enhanced with:
+   "The person is holding a smartphone in portrait orientation, the phone screen is clearly visible and shows app content or interface. Close-up shot, person looking at camera. Vertical 9:16 aspect ratio (1080x1920), cinematic quality, high resolution, professional photography, no text overlays, no watermarks, no signatures."
+   
+   FULL PROMPT SENT TO IMAGE API:
+   [visual_prompt] + "The person is holding a smartphone in portrait orientation, the phone screen is clearly visible and shows app content or interface. Close-up shot, person looking at camera. Vertical 9:16 aspect ratio (1080x1920), cinematic quality, high resolution, professional photography, no text overlays, no watermarks, no signatures."
+
+
+2. VEO VIDEO GENERATION PROMPT (Image-to-Video)
+   ---------------------------------------------
+   For talking_head scenes:
+   
+   "Animate this image: A beautiful person holding a smartphone in portrait mode, looking directly at the camera. The person is speaking naturally with realistic lip sync - their mouth opens and closes naturally as they speak. Subtle natural head movements, blinking eyes, and genuine facial expressions. The smartphone screen remains clearly visible and stable in their hands. The person maintains eye contact with the camera while speaking. Professional quality, cinematic lighting, smooth natural motion."
+   
+   This prompt is sent to Veo 3.1 API along with the generated image (image-to-video mode).
+
+
+3. SCRIPT GENERATION PROMPT (Claude)
+   ----------------------------------
+   The script service asks Claude to generate:
+   - For talking_head scenes: visual_prompt must describe "a beautiful person holding a smartphone showing the screen, portrait orientation, looking at camera"
+   - Dialogue text for each scene
+   - Visual descriptions for each scene
+
+
+ISSUE DIAGNOSIS
+===============
+
+If you're getting slideshows instead of animated talking avatar:
+
+1. Veo API might be failing silently
+   - Check server logs for "Failed to generate video" errors
+   - System falls back to FFmpeg animation (static slideshow) when Veo fails
+   - Look for error messages about Veo API
+
+2. Image might not be correct
+   - Check if generated images show person holding phone
+   - Images are saved in: tmp/[jobId]/images/scene_X.png
+
+3. Veo API access
+   - Verify GOOGLE_API_KEY has access to Veo 3.1 API
+   - Check if Veo API is available in your region
+   - Verify API key permissions
+
+4. Check logs for:
+   - "Generating talking-head video for scene X using Veo 3.1"
+   - "Veo prompt: [prompt text]"
+   - "Video generation started. Operation: [operation name]"
+   - Any error messages about Veo API
+
+NEXT STEPS
+==========
+
+1. Check server logs when generating video
+2. Look for Veo API errors
+3. Verify the generated images show person holding phone
+4. Check if Veo operation completes successfully
+5. If Veo fails, it will fallback to FFmpeg (slideshow) - this is the issue
+

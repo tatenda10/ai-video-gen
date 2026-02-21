@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment
+.env
+.env.local
+*.local
+
+# Build / output
+dist/
+build/
+output/
+tmp/
+*.log
+
+# SadTalker is cloned by install script (sadtalker_api/install_from_github.sh)
+# Do not track it as regular files; use git submodule add if you want to pin a version
+sadtalker_api/SadTalker/
+# Checkpoints are large (~1.5GB); download on server via install script
+sadtalker_api/checkpoints/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

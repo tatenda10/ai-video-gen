@@ -1,0 +1,281 @@
+AI SHORT-FORM VIDEO GENERATION APPLICATION
+Script for Frontend Design - Stitch with Google
+
+================================================================================
+APPLICATION OVERVIEW
+================================================================================
+
+This is an AI-powered short-form video generation platform that creates 
+professional vertical videos (TikTok, Instagram Reels, YouTube Shorts style) 
+entirely from a text idea. Users input a simple concept, and the system 
+generates a complete video with images, voiceover, and talking-head scenes.
+
+================================================================================
+CORE FUNCTIONALITY
+================================================================================
+
+1. TEXT INPUT TO VIDEO OUTPUT
+   - User enters a video idea (e.g., "Promote my AI companion app")
+   - User selects tone (warm, professional, energetic, etc.)
+   - User chooses platform (TikTok, Instagram Reels, YouTube Shorts)
+   - User sets duration (15, 30, 60 seconds)
+   - System generates complete video automatically
+
+2. AUTOMATED VIDEO GENERATION PIPELINE
+   - Script Generation: AI creates a structured video script with scenes
+   - Image Generation: AI creates custom images for each scene
+   - Voice Generation: AI generates natural-sounding voiceover
+   - Video Generation: AI creates talking-head videos with lip sync
+   - Video Assembly: All elements are combined into final video
+
+3. TALKING HEAD FEATURE
+   - Creates realistic talking avatar holding a smartphone
+   - Avatar speaks with natural lip sync matching the audio
+   - Phone screen is visible showing relevant content
+   - Professional quality, portrait orientation (9:16 aspect ratio)
+
+================================================================================
+USER FLOW
+================================================================================
+
+STEP 1: INPUT
+   - User lands on homepage
+   - Simple form with three fields:
+     * Video Idea (text area, placeholder: "Describe your video idea...")
+     * Tone (dropdown: Warm, Professional, Energetic, Casual, etc.)
+     * Platform (dropdown: TikTok, Instagram Reels, YouTube Shorts)
+     * Duration (dropdown: 15s, 30s, 60s)
+   - Large "Generate Video" button
+
+STEP 2: PROCESSING
+   - After clicking Generate, show progress screen
+   - Real-time status updates:
+     * "Generating script..." (Step 1/6)
+     * "Creating images..." (Step 2/6)
+     * "Generating voice..." (Step 3/6)
+     * "Creating videos..." (Step 4/6)
+     * "Assembling final video..." (Step 5/6)
+     * "Complete!" (Step 6/6)
+   - Progress bar with percentage
+   - Estimated time remaining
+   - User can see which step is currently processing
+
+STEP 3: PREVIEW & DOWNLOAD
+   - Video preview player (vertical 9:16 format)
+   - Play/pause controls
+   - Download button (high quality MP4)
+   - Share button (copy link, social media)
+   - "Generate Another" button to start over
+   - Option to regenerate with different settings
+
+================================================================================
+KEY FEATURES
+================================================================================
+
+1. ONE-CLICK GENERATION
+   - Single form submission creates entire video
+   - No video editing skills required
+   - No need for cameras, actors, or production equipment
+
+2. AI-POWERED COMPONENTS
+   - Script Writing: Creates engaging, platform-optimized scripts
+   - Image Creation: Generates custom visuals for each scene
+   - Voice Synthesis: Natural-sounding AI voiceover
+   - Video Creation: Realistic talking-head videos with lip sync
+   - Automatic Assembly: Combines all elements seamlessly
+
+3. PLATFORM OPTIMIZATION
+   - TikTok: Fast-paced, hook-driven content
+   - Instagram Reels: Aesthetic, visually appealing
+   - YouTube Shorts: Informative, value-driven
+   - Each platform gets optimized script and pacing
+
+4. TALKING HEAD AVATAR
+   - Beautiful, realistic person holding smartphone
+   - Natural facial expressions and lip sync
+   - Phone screen visible showing relevant content
+   - Professional quality, ready for social media
+
+5. REAL-TIME PROGRESS TRACKING
+   - Live updates on generation progress
+   - Clear indication of current step
+   - Estimated completion time
+   - Error handling with clear messages
+
+================================================================================
+UI/UX REQUIREMENTS
+================================================================================
+
+DESIGN STYLE
+   - Modern, clean, minimalist
+   - Professional yet approachable
+   - Mobile-first responsive design
+   - Dark mode support preferred
+   - Smooth animations and transitions
+
+COLOR SCHEME
+   - Primary: Modern tech colors (blues, purples, or gradients)
+   - Accent: Vibrant action color for CTA buttons
+   - Background: Clean white or dark theme
+   - Text: High contrast for readability
+
+KEY PAGES/SCREENS
+
+1. HOMEPAGE
+   - Hero section with value proposition
+   - Simple input form (centered, prominent)
+   - Example videos or use cases
+   - How it works section (3-4 steps)
+   - Trust indicators (if any)
+
+2. GENERATION PAGE
+   - Progress indicator (large, visible)
+   - Step-by-step status
+   - Progress bar
+   - Estimated time
+   - Cancel option (if possible)
+   - Background: Subtle animation or gradient
+
+3. RESULTS PAGE
+   - Video player (prominent, centered)
+   - Video controls
+   - Download button (large, clear)
+   - Share options
+   - Regenerate options
+   - Success message/celebration
+
+4. ERROR STATES
+   - Clear error messages
+   - Retry options
+   - Help/support links
+   - Friendly, non-technical language
+
+MOBILE CONSIDERATIONS
+   - Touch-friendly buttons (min 44px)
+   - Vertical video player optimized for mobile
+   - Swipe gestures for navigation
+   - Fast loading times
+   - Offline error handling
+
+================================================================================
+TECHNICAL CAPABILITIES (For Reference)
+================================================================================
+
+VIDEO OUTPUT
+   - Format: MP4
+   - Resolution: 1080x1920 (9:16 portrait)
+   - Duration: 15, 30, or 60 seconds
+   - Quality: High definition, social media ready
+   - Audio: Synced voiceover throughout
+
+GENERATION TIME
+   - Typical: 2-5 minutes for 30-second video
+   - Can vary based on complexity
+   - Real-time progress updates provided
+
+SUPPORTED CONTENT
+   - Promotional videos
+   - Product demonstrations
+   - Educational content
+   - Social media posts
+   - Marketing campaigns
+
+================================================================================
+USER EXPERIENCE GOALS
+================================================================================
+
+SIMPLICITY
+   - No learning curve
+   - Intuitive interface
+   - Clear instructions
+   - Minimal steps to completion
+
+SPEED
+   - Fast generation (2-5 minutes)
+   - Quick preview
+   - Instant download
+   - No waiting for processing
+
+QUALITY
+   - Professional-looking results
+   - High-quality video output
+   - Natural-sounding voice
+   - Realistic talking avatar
+
+RELIABILITY
+   - Clear error messages
+   - Progress transparency
+   - Retry options
+   - Support availability
+
+================================================================================
+CALL-TO-ACTION ELEMENTS
+================================================================================
+
+PRIMARY CTA
+   - "Generate Video" button
+   - Large, prominent, high contrast
+   - Clear hover/active states
+   - Loading state during processing
+
+SECONDARY CTAs
+   - "Download Video" (after generation)
+   - "Share Video" (social sharing)
+   - "Generate Another" (new video)
+   - "Try Different Settings" (regenerate)
+
+================================================================================
+VISUAL ELEMENTS NEEDED
+================================================================================
+
+ICONS
+   - Video generation icon
+   - Progress/loading indicators
+   - Download icon
+   - Share icon
+   - Success checkmark
+   - Error/warning icons
+
+ILLUSTRATIONS
+   - Empty state illustrations
+   - Success state illustrations
+   - Error state illustrations
+   - Process flow diagrams
+
+ANIMATIONS
+   - Loading spinners
+   - Progress bar animations
+   - Success celebrations
+   - Smooth page transitions
+
+================================================================================
+ACCESSIBILITY REQUIREMENTS
+================================================================================
+
+- Keyboard navigation support
+- Screen reader compatibility
+- High contrast mode
+- Clear focus indicators
+- Alt text for images
+- ARIA labels for interactive elements
+- Responsive text sizing
+
+================================================================================
+BRAND PERSONALITY
+================================================================================
+
+- Innovative and cutting-edge
+- Professional yet friendly
+- Efficient and reliable
+- Empowering (makes video creation accessible)
+- Modern and tech-forward
+
+================================================================================
+END OF SCRIPT
+================================================================================
+
+This application democratizes video creation by making professional-quality 
+short-form videos accessible to anyone with just a text idea. The frontend 
+should reflect this simplicity and power, making users feel confident and 
+excited about creating videos without any technical expertise.
+

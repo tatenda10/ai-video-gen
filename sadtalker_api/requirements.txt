@@ -1,0 +1,15 @@
+flask==3.0.0
+flask-cors==4.0.0
+numpy>=1.21.0
+torch>=1.9.0
+torchvision>=0.10.0
+opencv-python>=4.5.0
+Pillow>=8.3.0
+face-alignment>=1.3.4
+imageio>=2.9.0
+imageio-ffmpeg>=0.4.5
+librosa>=0.9.0
+scipy>=1.7.0
+scikit-image>=0.18.0
+tqdm>=4.62.0
+
