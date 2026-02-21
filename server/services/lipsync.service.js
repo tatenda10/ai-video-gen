@@ -96,7 +96,14 @@ export class LipsyncService {
       
       if (error.response) {
         log.error('API Error Status:', error.response.status);
-        log.error('API Error Data:', error.response.data?.toString?.() || 'No error data');
+        let errBody = error.response.data;
+        if (Buffer.isBuffer(errBody) || errBody instanceof ArrayBuffer) {
+          errBody = Buffer.from(errBody).toString('utf8');
+        }
+        if (typeof errBody === 'object' && errBody !== null) {
+          errBody = JSON.stringify(errBody, null, 2);
+        }
+        log.error('API Error Data:', errBody || 'No error data');
       }
       
       if (error.code === 'ETIMEDOUT' || error.message.includes('timeout')) {

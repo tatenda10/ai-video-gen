@@ -44,6 +44,8 @@ fi
 source "$VENV_DIR/bin/activate"
 
 pip install -U pip setuptools wheel -q
+# pkg_resources (setuptools) required by librosa
+pip install setuptools -q
 echo "==> Installing PyTorch (CUDA)..."
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118 -q 2>/dev/null || pip install torch torchvision -q
 echo "==> Installing SadTalker dependencies..."
@@ -62,6 +64,15 @@ if [ ! -f "$CHECKPOINTS_DIR/SadTalker_V0.0.2_256.safetensors" ]; then
   done
 else
   echo "==> Checkpoints already present."
+fi
+
+# Fix basicsr + torchvision compatibility (functional_tensor was removed in newer torchvision)
+BASICSR_DEG="$(python -c "import basicsr; import os; print(os.path.join(os.path.dirname(basicsr.__file__), 'data', 'degradations.py'))" 2>/dev/null)" || true
+if [ -n "$BASICSR_DEG" ] && [ -f "$BASICSR_DEG" ]; then
+  if grep -q 'functional_tensor' "$BASICSR_DEG" 2>/dev/null; then
+    echo "==> Patching basicsr for torchvision compatibility..."
+    sed -i.bak 's/from torchvision.transforms.functional_tensor import rgb_to_grayscale/from torchvision.transforms.functional import rgb_to_grayscale/' "$BASICSR_DEG"
+  fi
 fi
 
 echo ""

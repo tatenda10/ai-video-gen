@@ -59,7 +59,7 @@ export class VideoService {
     const audioFiles = [];
 
     for (const scene of scenes.sort((a, b) => a.scene_id - b.scene_id)) {
-      // All videos are now in videoMap (Veo generates all scenes)
+      // All videos are now in videoMap (SadTalker/MuseTalk generates all scenes)
       const videoPath = videoMap[scene.scene_id];
 
       if (!videoPath || !(await fs.pathExists(videoPath))) {

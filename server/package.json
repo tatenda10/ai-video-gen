@@ -8,7 +8,8 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "generate-promo": "node generate-promo.js",
-    "generate-talking-head": "node generate-amora-talking-head.js"
+    "generate-talking-head": "node generate-amora-talking-head.js",
+    "generate-from-existing": "node generate-from-existing.js"
   },
   "keywords": [
     "ai",

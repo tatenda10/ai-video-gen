@@ -6,7 +6,8 @@ import fs from 'fs-extra';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config();
+// Load .env from server directory so it works even when started from parent dir
+dotenv.config({ path: join(__dirname, '.env') });
 
 const config = {
   anthropic: {
@@ -29,7 +30,7 @@ const config = {
     apiUrl: process.env.MUSETALK_API_URL || 'http://localhost:5001',
   },
   videoGeneration: {
-    provider: process.env.VIDEO_GENERATION_PROVIDER || 'musetalk', // 'musetalk' or 'veo'
+    provider: process.env.VIDEO_GENERATION_PROVIDER || 'sadtalker', // 'sadtalker' | 'musetalk'
   },
   ffmpeg: {
     path: process.env.FFMPEG_PATH,

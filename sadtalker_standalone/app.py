@@ -102,8 +102,10 @@ def generate():
             cmd.extend(['--enhancer', enhancer])
 
         env = os.environ.copy()
-        # Only add SadTalker to PYTHONPATH; do not replace so venv site-packages stay (pkg_resources, torch).
-        env['PYTHONPATH'] = os.pathsep.join([SADTALKER_DIR, env.get('PYTHONPATH', '')])
+        # Do not set PYTHONPATH so venv's Python uses its default path (finds setuptools, torch).
+        # cwd=SADTALKER_DIR so the script's dir is on path and "import src" works.
+        if 'PYTHONPATH' in env:
+            env.pop('PYTHONPATH')
 
         logger.info('[%s] Running SadTalker...', request_id)
         result = subprocess.run(cmd, cwd=SADTALKER_DIR, capture_output=True, text=True, timeout=1800, env=env)

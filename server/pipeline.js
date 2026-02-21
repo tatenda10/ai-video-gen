@@ -5,8 +5,8 @@ import log from './utils/logger.js';
 import { ScriptService } from './services/script.service.js';
 import { ImageService } from './services/image.service.js';
 import { VoiceService } from './services/voice.service.js';
-import { VeoService } from './services/veo.service.js';
 import { MuseTalkService } from './services/musetalk.service.js';
+import { LipsyncService } from './services/lipsync.service.js';
 import { VideoService } from './services/video.service.js';
 import { cleanupJob } from './utils/cleanup.js';
 
@@ -16,12 +16,12 @@ export class VideoPipeline {
     this.scriptService = new ScriptService(config);
     this.imageService = new ImageService(config);
     this.voiceService = new VoiceService(config);
-    this.veoService = new VeoService(config);
     this.musetalkService = new MuseTalkService(config);
+    this.lipsyncService = new LipsyncService(config);
     this.videoService = new VideoService(config);
     
     // Determine which video generation provider to use
-    this.videoProvider = config.videoGeneration?.provider || 'musetalk';
+    this.videoProvider = config.videoGeneration?.provider || 'sadtalker';
     log.info(`Using video generation provider: ${this.videoProvider}`);
   }
 
@@ -59,7 +59,8 @@ export class VideoPipeline {
       );
 
       // Step 4: Generate video (only 1 scene)
-      const providerName = this.videoProvider === 'musetalk' ? 'MuseTalk' : 'Veo 3.1';
+      const providerNames = { musetalk: 'MuseTalk', sadtalker: 'SadTalker' };
+      const providerName = providerNames[this.videoProvider] || this.videoProvider;
       log.info(`Step 4/7: Generating video with ${providerName}...`);
       const videoMap = {};
       
@@ -79,7 +80,30 @@ export class VideoPipeline {
       let videoPath;
       
       // Generate talking-head video based on configured provider
-      if (this.videoProvider === 'musetalk') {
+      if (this.videoProvider === 'sadtalker') {
+        // SadTalker (RunPod): image + audio → video
+        log.info(`Generating single talking-head video with SadTalker...`);
+        videoPath = await this.lipsyncService.generateTalkingHead(
+          imagePath,
+          audioPath,
+          scene.scene_id,
+          jobId,
+          this.config.paths.temp
+        );
+        if (audioPath && videoPath) {
+          log.info(`Replacing audio with ElevenLabs audio...`);
+          const finalVideoPath = await this.videoService.replaceAudio(
+            videoPath,
+            audioPath,
+            scene.scene_id,
+            jobId,
+            this.config.paths.temp
+          );
+          videoMap[scene.scene_id] = finalVideoPath;
+        } else {
+          videoMap[scene.scene_id] = videoPath;
+        }
+      } else if (this.videoProvider === 'musetalk') {
         // MuseTalk: image + audio → video
         log.info(`Generating single talking-head video with MuseTalk...`);
         videoPath = await this.musetalkService.generateTalkingHead(
@@ -89,8 +113,6 @@ export class VideoPipeline {
           jobId,
           this.config.paths.temp
         );
-        // MuseTalk already includes audio, so we might not need to replace it
-        // But we can still replace it with ElevenLabs audio for consistency
         if (audioPath && videoPath) {
           log.info(`Replacing audio with ElevenLabs audio...`);
           const finalVideoPath = await this.videoService.replaceAudio(
@@ -105,32 +127,7 @@ export class VideoPipeline {
           videoMap[scene.scene_id] = videoPath;
         }
       } else {
-        // Veo 3.1: image + prompt → video (then replace audio)
-        const audioPrompt = scene.dialogue || scene.text;
-        log.info(`Generating single talking-head video with Veo 3.1...`);
-        
-        videoPath = await this.veoService.generateTalkingHead(
-          imagePath,
-          audioPrompt,
-          scene.scene_id,
-          jobId,
-          this.config.paths.temp
-        );
-
-        // Replace audio with ElevenLabs audio if available
-        if (audioPath && videoPath) {
-          log.info(`Replacing audio with ElevenLabs audio...`);
-          const finalVideoPath = await this.videoService.replaceAudio(
-            videoPath,
-            audioPath,
-            scene.scene_id,
-            jobId,
-            this.config.paths.temp
-          );
-          videoMap[scene.scene_id] = finalVideoPath;
-        } else {
-          videoMap[scene.scene_id] = videoPath;
-        }
+        throw new Error(`Unknown video provider: ${this.videoProvider}. Use sadtalker or musetalk.`);
       }
 
       // Step 5: Final video (only 1 scene, no stitching needed)
