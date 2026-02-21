@@ -83,8 +83,11 @@ def generate():
         if not os.path.isdir(CHECKPOINT_DIR):
             return jsonify({'error': 'Checkpoints not found', 'expected_path': CHECKPOINT_DIR}), 500
 
+        # Use venv's python so subprocess sees setuptools, torch, etc. (same dir as app.py)
+        venv_python = os.path.join(BASE_DIR, 'venv', 'bin', 'python')
+        python_exe = venv_python if os.path.isfile(venv_python) else sys.executable
         cmd = [
-            sys.executable,
+            python_exe,
             INFERENCE_SCRIPT,
             '--driven_audio', audio_path,
             '--source_image', image_path,
@@ -99,16 +102,8 @@ def generate():
             cmd.extend(['--enhancer', enhancer])
 
         env = os.environ.copy()
-        # Keep venv site-packages first so subprocess finds setuptools, torch, etc.
-        site_packages = None
-        for p in sys.path:
-            if 'site-packages' in p and os.path.exists(p):
-                site_packages = p
-                break
-        if site_packages:
-            env['PYTHONPATH'] = os.pathsep.join([site_packages, SADTALKER_DIR, env.get('PYTHONPATH', '')])
-        else:
-            env['PYTHONPATH'] = os.pathsep.join([SADTALKER_DIR, env.get('PYTHONPATH', '')])
+        # Only add SadTalker to PYTHONPATH; do not replace so venv site-packages stay (pkg_resources, torch).
+        env['PYTHONPATH'] = os.pathsep.join([SADTALKER_DIR, env.get('PYTHONPATH', '')])
 
         logger.info('[%s] Running SadTalker...', request_id)
         result = subprocess.run(cmd, cwd=SADTALKER_DIR, capture_output=True, text=True, timeout=1800, env=env)
